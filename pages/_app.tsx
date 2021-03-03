@@ -1,4 +1,4 @@
-import '../styles/globals.css';
+import '../styles/compiled.css';
 import type { AppProps } from 'next/app';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { NextPage } from 'next';
