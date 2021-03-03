@@ -5,9 +5,13 @@ import {
 	useSelector as useSelectorHook,
 } from 'react-redux';
 import cartReducer from './cartReducer';
+import menuReducer from './menuReducer';
 
 export const store = configureStore({
-	reducer: cartReducer,
+	reducer: {
+		cart: cartReducer,
+		menu: menuReducer,
+	},
 });
 
 // Export Typed Redux Hooks

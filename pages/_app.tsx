@@ -4,7 +4,7 @@ import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
 import { NextPage } from 'next';
 import { Provider } from 'react-redux';
 import { store } from '../store';
-import Cart from '../components/Cart';
+import Layout from '../components/layout/Layout';
 
 const client = new ApolloClient({
 	uri: process.env.STOREFRONT_URL,
@@ -19,8 +19,9 @@ const App: NextPage<AppProps> = ({ Component, pageProps }) => {
 	return (
 		<ApolloProvider client={client}>
 			<Provider store={store}>
-				<Cart />
-				<Component {...pageProps} />
+				<Layout>
+					<Component {...pageProps} />
+				</Layout>
 			</Provider>
 		</ApolloProvider>
 	);

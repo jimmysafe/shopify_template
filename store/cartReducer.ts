@@ -3,7 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 export const cart = createSlice({
 	name: 'cart',
 	initialState: {
-		amount: 0,
+		open: false,
 		items: [],
 	},
 	reducers: {
@@ -11,6 +11,12 @@ export const cart = createSlice({
 			const existingCart = localStorage.getItem('cart');
 			if (existingCart) state.items = JSON.parse(existingCart);
 			else state.items = [];
+		},
+		openCart: (state) => {
+			state.open = true;
+		},
+		closeCart: (state) => {
+			state.open = false;
 		},
 		addToCart: (state, action) => {
 			const index = state.items.findIndex((item) => item.variantId === action.payload.variantId);
@@ -36,6 +42,6 @@ export const cart = createSlice({
 	},
 });
 
-export const { initCart, addToCart, removeFromCart } = cart.actions;
+export const { initCart, addToCart, removeFromCart, openCart, closeCart } = cart.actions;
 
 export default cart.reducer;

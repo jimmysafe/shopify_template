@@ -5,5 +5,10 @@
     "items": [
       "Shirts"
     ]
+  },
+  {
+    "title": "Pants",
+    "handle": "pants",
+    "items": []
   }
 ]

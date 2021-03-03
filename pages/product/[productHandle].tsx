@@ -25,7 +25,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 
 	const quantity = useRef<HTMLInputElement>();
 
-	const cart = useSelector((state) => state.items);
+	const cart = useSelector((state) => state.cart.items);
 	const dispatch = useDispatch();
 
 	if (loading) return <p>Loading...</p>;

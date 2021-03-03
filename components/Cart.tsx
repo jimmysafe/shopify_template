@@ -4,7 +4,7 @@ import { initCart, removeFromCart } from '../store/cartReducer';
 
 const Cart: FC = () => {
 	const dispatch = useDispatch();
-	const cart = useSelector((state) => state.items);
+	const cart = useSelector((state) => state.cart.items);
 
 	useEffect(() => {
 		dispatch(initCart());
