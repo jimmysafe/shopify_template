@@ -4,7 +4,7 @@
 	"private": true,
 	"scripts": {
 		"dev": "npm run generate && npm run build:css && next dev",
-		"build": "next build",
+		"build": "npm run generate:menu && next build",
 		"start": "next start",
 		"build:css": "tailwind build styles/main.css -o styles/compiled.css",
 		"generate": "graphql-codegen --config codegen.js",
@@ -20,7 +20,9 @@
 		"react-dom": "17.0.1",
 		"react-icons": "^4.2.0",
 		"react-redux": "^7.2.2",
-		"react-transition-group": "^4.4.1"
+		"react-slick": "^0.28.0",
+		"react-transition-group": "^4.4.1",
+		"slick-carousel": "^1.8.1"
 	},
 	"devDependencies": {
 		"@graphql-codegen/cli": "^1.21.1",
@@ -29,6 +31,7 @@
 		"@types/node": "^14.14.31",
 		"@types/react": "^17.0.2",
 		"@types/react-redux": "^7.1.16",
+		"@types/react-slick": "^0.23.4",
 		"@types/react-transition-group": "^4.4.1",
 		"autoprefixer": "^10.2.4",
 		"postcss": "^8.2.6",

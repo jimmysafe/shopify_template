@@ -5109,6 +5109,7 @@ export type ProductByHandleQuery = (
       { __typename?: 'ImageConnection' }
       & { edges: Array<(
         { __typename?: 'ImageEdge' }
+        & Pick<ImageEdge, 'cursor'>
         & { node: (
           { __typename?: 'Image' }
           & Pick<Image, 'originalSrc' | 'altText'>
@@ -5121,7 +5122,10 @@ export type ProductByHandleQuery = (
         & { node: (
           { __typename?: 'ProductVariant' }
           & Pick<ProductVariant, 'id' | 'title'>
-          & { priceV2: (
+          & { selectedOptions: Array<(
+            { __typename?: 'SelectedOption' }
+            & Pick<SelectedOption, 'name' | 'value'>
+          )>, priceV2: (
             { __typename?: 'MoneyV2' }
             & Pick<MoneyV2, 'amount' | 'currencyCode'>
           ), image?: Maybe<(
@@ -5151,6 +5155,60 @@ export type ProductsQuery = (
   ) }
 );
 
+export type ProductsByTypeQueryVariables = Exact<{
+  query: Scalars['String'];
+}>;
+
+
+export type ProductsByTypeQuery = (
+  { __typename?: 'QueryRoot' }
+  & { products: (
+    { __typename?: 'ProductConnection' }
+    & { edges: Array<(
+      { __typename?: 'ProductEdge' }
+      & { node: (
+        { __typename?: 'Product' }
+        & Pick<Product, 'id' | 'title' | 'handle'>
+        & { priceRange: (
+          { __typename?: 'ProductPriceRange' }
+          & { maxVariantPrice: (
+            { __typename?: 'MoneyV2' }
+            & Pick<MoneyV2, 'amount' | 'currencyCode'>
+          ), minVariantPrice: (
+            { __typename?: 'MoneyV2' }
+            & Pick<MoneyV2, 'amount' | 'currencyCode'>
+          ) }
+        ), images: (
+          { __typename?: 'ImageConnection' }
+          & { edges: Array<(
+            { __typename?: 'ImageEdge' }
+            & { node: (
+              { __typename?: 'Image' }
+              & Pick<Image, 'originalSrc' | 'altText'>
+            ) }
+          )> }
+        ), variants: (
+          { __typename?: 'ProductVariantConnection' }
+          & { edges: Array<(
+            { __typename?: 'ProductVariantEdge' }
+            & { node: (
+              { __typename?: 'ProductVariant' }
+              & Pick<ProductVariant, 'id' | 'title'>
+              & { priceV2: (
+                { __typename?: 'MoneyV2' }
+                & Pick<MoneyV2, 'amount' | 'currencyCode'>
+              ), image?: Maybe<(
+                { __typename?: 'Image' }
+                & Pick<Image, 'originalSrc'>
+              )> }
+            ) }
+          )> }
+        ) }
+      ) }
+    )> }
+  ) }
+);
+
 
 export const ProductByHandleDocument = gql`
     query productByHandle($handle: String!) {
@@ -5170,6 +5228,7 @@ export const ProductByHandleDocument = gql`
     }
     images(first: 10) {
       edges {
+        cursor
         node {
           originalSrc
           altText
@@ -5181,6 +5240,10 @@ export const ProductByHandleDocument = gql`
         node {
           id
           title
+          selectedOptions {
+            name
+            value
+          }
           priceV2 {
             amount
             currencyCode
@@ -5256,3 +5319,75 @@ export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<P
 export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
 export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
 export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
+export const ProductsByTypeDocument = gql`
+    query productsByType($query: String!) {
+  products(query: $query, first: 250) {
+    edges {
+      node {
+        id
+        title
+        handle
+        priceRange {
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+        images(first: 10) {
+          edges {
+            node {
+              originalSrc
+              altText
+            }
+          }
+        }
+        variants(first: 10) {
+          edges {
+            node {
+              id
+              title
+              priceV2 {
+                amount
+                currencyCode
+              }
+              image {
+                originalSrc
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useProductsByTypeQuery__
+ *
+ * To run a query within a React component, call `useProductsByTypeQuery` and pass it any options that fit your needs.
+ * When your component renders, `useProductsByTypeQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useProductsByTypeQuery({
+ *   variables: {
+ *      query: // value for 'query'
+ *   },
+ * });
+ */
+export function useProductsByTypeQuery(baseOptions: Apollo.QueryHookOptions<ProductsByTypeQuery, ProductsByTypeQueryVariables>) {
+        return Apollo.useQuery<ProductsByTypeQuery, ProductsByTypeQueryVariables>(ProductsByTypeDocument, baseOptions);
+      }
+export function useProductsByTypeLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsByTypeQuery, ProductsByTypeQueryVariables>) {
+          return Apollo.useLazyQuery<ProductsByTypeQuery, ProductsByTypeQueryVariables>(ProductsByTypeDocument, baseOptions);
+        }
+export type ProductsByTypeQueryHookResult = ReturnType<typeof useProductsByTypeQuery>;
+export type ProductsByTypeLazyQueryHookResult = ReturnType<typeof useProductsByTypeLazyQuery>;
+export type ProductsByTypeQueryResult = Apollo.QueryResult<ProductsByTypeQuery, ProductsByTypeQueryVariables>;

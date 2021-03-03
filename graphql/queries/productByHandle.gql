@@ -15,6 +15,7 @@ query productByHandle($handle: String!) {
 		}
 		images(first: 10) {
 			edges {
+				cursor
 				node {
 					originalSrc
 					altText
@@ -26,6 +27,10 @@ query productByHandle($handle: String!) {
 				node {
 					id
 					title
+					selectedOptions {
+						name
+						value
+					}
 					priceV2 {
 						amount
 						currencyCode

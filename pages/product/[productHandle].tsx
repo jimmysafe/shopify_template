@@ -1,9 +1,11 @@
 import { NextPage } from 'next';
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { GetServerSideProps } from 'next';
 import { useProductByHandleQuery } from '../../graphql/generated';
 import { addToCart as add } from '../../store/cartReducer';
-import { useDispatch, useSelector } from '../../store';
+import { useDispatch } from '../../store';
+import ProductSlider from '../../components/product/ProductSlider';
+import { FiMinus as Minus, FiPlus as Plus } from 'react-icons/fi';
 
 type ProductPageProps = {
 	handle: string;
@@ -19,19 +21,25 @@ type CartItem = {
 };
 
 const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
-	const { loading, error, data } = useProductByHandleQuery({ variables: { handle } });
+	const {
+		loading: productLoading,
+		error: productError,
+		data: productData,
+	} = useProductByHandleQuery({ variables: { handle } });
 
-	const [selectedVariant, setSelectedVariant] = useState<CartItem>(null);
-
-	const quantity = useRef<HTMLInputElement>();
-
-	const cart = useSelector((state) => state.cart.items);
 	const dispatch = useDispatch();
+	const [selectedVariant, setSelectedVariant] = useState<CartItem>(null);
+	const [quantity, setQuantity] = useState<number>(1);
 
-	if (loading) return <p>Loading...</p>;
-	if (error) return <p>Error..</p>;
+	useEffect(() => {
+		const first_variant: any = document.querySelector('.variant');
+		first_variant?.click();
+	}, [productData]);
 
-	const { variants, images, priceRange, title } = data.productByHandle;
+	if (productLoading) return <p>Loading...</p>;
+	if (productError) return <p>Error..</p>;
+
+	const { variants, images, priceRange, title } = productData.productByHandle;
 
 	const selectVariant = (
 		variantId: string,
@@ -40,9 +48,14 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 		price: number,
 		currency: string
 	) => {
+		let formattedTitle: string;
+
+		if (variants.edges.length > 1) formattedTitle = `${title} - ${variantTitle}`;
+		else formattedTitle = title;
+
 		setSelectedVariant({
 			variantId,
-			title: `${title} - ${variantTitle}`,
+			title: formattedTitle,
 			image: variantImage,
 			price,
 			currency,
@@ -51,7 +64,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 
 	const addToCart = () => {
 		const newItem: CartItem = {
-			quantity: Number(quantity.current.value),
+			quantity,
 			variantId: selectedVariant.variantId,
 			image: selectedVariant.image,
 			title: selectedVariant.title,
@@ -64,45 +77,79 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 
 	return (
 		<main>
-			<h1>{title}</h1>
 			<section className='images'>
-				{images.edges.map((img, i) => (
-					<img key={i} src={img.node.originalSrc} alt={img.node.altText} width='100px' />
-				))}
+				<ProductSlider images={images.edges} />
 			</section>
-			<section className='price-range'>
-				{!selectedVariant ? (
-					<span>{`${priceRange.minVariantPrice.currencyCode} ${priceRange.minVariantPrice.amount} - ${priceRange.maxVariantPrice.currencyCode} ${priceRange.maxVariantPrice.amount}`}</span>
-				) : (
-					<span>{`${selectedVariant.currency} ${selectedVariant.price}`}</span>
-				)}
+
+			<section className='content m-4 mt-10 font-primary text-typo-dark'>
+				<h1>{selectedVariant?.title}</h1>
+
+				{/* PRICE */}
+				<div className='font-semibold my-2'>
+					<span>{`${selectedVariant?.currency} ${selectedVariant?.price}`}</span>
+				</div>
+
+				{/* VARIANTS */}
+				<section className='mt-4'>
+					<p className='uppercase text-xs font-bold'>
+						{variants?.edges[0]?.node?.selectedOptions[0]?.name}
+					</p>
+					<div className='flex justify-start items-center flex-wrap'>
+						{variants.edges.map((variant) => {
+							const isSelected = variant.node.id === selectedVariant?.variantId;
+							return (
+								<div
+									className={`variant ${
+										isSelected
+											? 'border-primary-dark bg-primary-light text-white'
+											: 'border-typo-light text-typo-dark bg-white'
+									} transition-all duration-300 py-3 px-5 font-semibold text-xs border  mr-2 my-2 rounded-md`}
+									key={variant.node.id}
+									onClick={() =>
+										selectVariant(
+											variant.node.id,
+											variant.node.title,
+											variant.node.image.originalSrc,
+											Number(variant.node.priceV2.amount),
+											variant.node.priceV2.currencyCode
+										)
+									}
+								>
+									{variants.edges.length > 1 && variant.node.title}
+								</div>
+							);
+						})}
+					</div>
+				</section>
+
+				{/* QUANTITY */}
+				<p className='uppercase text-xs font-bold mt-4'>quantity</p>
+				<section className='flex justify-start items-center mt-2'>
+					<div
+						className='border border-primary-dark bg-primary-light flex justify-center items-center rounded-md'
+						onClick={() => setQuantity(quantity - 1)}
+					>
+						<Minus className='text-white w-6 h-6' />
+					</div>
+					<div className='px-5 py-1 mx-1 rounded-md border border-primary-dark'>{quantity}</div>
+					<div
+						className='border border-primary-dark bg-primary-light flex justify-center items-center rounded-md'
+						onClick={() => setQuantity(quantity + 1)}
+					>
+						<Plus className='text-white w-6 h-6' />
+					</div>
+				</section>
 			</section>
-			<section className='variants'>
-				{variants.edges.map((variant) => {
-					return (
-						<div
-							key={variant.node.id}
-							onClick={() =>
-								selectVariant(
-									variant.node.id,
-									variant.node.title,
-									variant.node.image.originalSrc,
-									Number(variant.node.priceV2.amount),
-									variant.node.priceV2.currencyCode
-								)
-							}
-						>
-							{variant.node.title}
-						</div>
-					);
-				})}
+
+			{/* ADD TO CART BAR */}
+			<section className='fixed bottom-0 left-0 p-4 border-t border-typo-light flex justify-center items-center w-full bg-white'>
+				<div
+					className='py-2 px-10 bg-primary-light border border-primary-dark rounded-md text-white font-semibold'
+					onClick={addToCart}
+				>
+					Add to Cart
+				</div>
 			</section>
-			<section className='quantity'>
-				<input ref={quantity} type='number' defaultValue={1} />
-			</section>
-			<button onClick={addToCart} disabled={!selectedVariant}>
-				Add to Cart
-			</button>
 		</main>
 	);
 };
