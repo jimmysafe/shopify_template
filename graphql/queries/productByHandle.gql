@@ -1,0 +1,40 @@
+query productByHandle($handle: String!) {
+	productByHandle(handle: $handle) {
+		id
+		title
+		handle
+		priceRange {
+			maxVariantPrice {
+				amount
+				currencyCode
+			}
+			minVariantPrice {
+				amount
+				currencyCode
+			}
+		}
+		images(first: 10) {
+			edges {
+				node {
+					originalSrc
+					altText
+				}
+			}
+		}
+		variants(first: 10) {
+			edges {
+				node {
+					id
+					title
+					priceV2 {
+						amount
+						currencyCode
+					}
+					image {
+						originalSrc
+					}
+				}
+			}
+		}
+	}
+}
