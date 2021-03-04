@@ -3,14 +3,11 @@ import { FiX as X } from 'react-icons/fi';
 import { useDispatch, useSelector } from '../../../store';
 import { closeMenu, hideSubMenu } from '../../../store/menuReducer';
 import { Transition } from 'react-transition-group';
-import Collections from './Collections';
-import Categories from './Categories';
 import MenuItems from './MenuItems';
 
 const Menu: FC = () => {
 	const dispatch = useDispatch();
 	const menu = useSelector((state) => state.menu);
-	const submenu = useSelector((state) => state.menu.subMenu);
 
 	const duration = 300;
 

@@ -1,6 +1,6 @@
 import { FC } from 'react';
 import { useSelector } from '../../store';
-import Cart from '../Cart';
+import Cart from './cart/Cart';
 import Header from './Header';
 import Menu from './menu/Menu';
 
@@ -11,7 +11,7 @@ const Layout: FC = ({ children }) => {
 	return (
 		<main>
 			<Menu />
-			{cart.open && <Cart />}
+			<Cart />
 			<Header />
 			<div className='container mx-auto'>{children}</div>
 		</main>
