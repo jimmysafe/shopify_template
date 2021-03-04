@@ -63,64 +63,81 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 	};
 
 	const addToCart = () => {
-		const newItem: CartItem = {
-			quantity,
-			variantId: selectedVariant.variantId,
-			image: selectedVariant.image,
-			title: selectedVariant.title,
-			price: selectedVariant.price,
-			currency: selectedVariant.currency,
-		};
+		let newItem: CartItem;
+
+		if (selectedVariant) {
+			newItem = {
+				quantity,
+				variantId: selectedVariant.variantId,
+				image: selectedVariant.image,
+				title: selectedVariant.title,
+				price: Number(selectedVariant.price),
+				currency: selectedVariant.currency,
+			};
+		} else {
+			newItem = {
+				quantity,
+				variantId: variants?.edges[0]?.node?.id,
+				image: images?.edges[0]?.node?.originalSrc,
+				title,
+				price: Number(priceRange?.minVariantPrice?.amount),
+				currency: priceRange?.minVariantPrice?.currencyCode,
+			};
+		}
 
 		dispatch(add(newItem));
 	};
 
 	return (
-		<main>
+		<main className='mb-28'>
 			<section className='images'>
 				<ProductSlider images={images.edges} />
 			</section>
 
 			<section className='content m-4 mt-10 font-primary text-typo-dark'>
-				<h1>{selectedVariant?.title}</h1>
+				<h1>{selectedVariant ? selectedVariant.title : title}</h1>
 
 				{/* PRICE */}
 				<div className='font-semibold my-2'>
-					<span>{`${selectedVariant?.currency} ${selectedVariant?.price}`}</span>
+					<span>{`${
+						selectedVariant ? selectedVariant?.currency : priceRange.minVariantPrice.currencyCode
+					} ${selectedVariant ? selectedVariant?.price : priceRange.minVariantPrice.amount}`}</span>
 				</div>
 
 				{/* VARIANTS */}
-				<section className='mt-4'>
-					<p className='uppercase text-xs font-bold'>
-						{variants?.edges[0]?.node?.selectedOptions[0]?.name}
-					</p>
-					<div className='flex justify-start items-center flex-wrap'>
-						{variants.edges.map((variant) => {
-							const isSelected = variant.node.id === selectedVariant?.variantId;
-							return (
-								<div
-									className={`variant ${
-										isSelected
-											? 'border-primary-dark bg-primary-light text-white'
-											: 'border-typo-light text-typo-dark bg-white'
-									} transition-all duration-300 py-3 px-5 font-semibold text-xs border  mr-2 my-2 rounded-md`}
-									key={variant.node.id}
-									onClick={() =>
-										selectVariant(
-											variant.node.id,
-											variant.node.title,
-											variant.node.image.originalSrc,
-											Number(variant.node.priceV2.amount),
-											variant.node.priceV2.currencyCode
-										)
-									}
-								>
-									{variants.edges.length > 1 && variant.node.title}
-								</div>
-							);
-						})}
-					</div>
-				</section>
+				{variants?.edges?.length > 1 && (
+					<section className='mt-4'>
+						<p className='uppercase text-xs font-bold'>
+							{variants?.edges[0]?.node?.selectedOptions[0]?.name}
+						</p>
+						<div className='flex justify-start items-center flex-wrap'>
+							{variants.edges.map((variant) => {
+								const isSelected = variant.node.id === selectedVariant?.variantId;
+								return (
+									<div
+										className={`variant ${
+											isSelected
+												? 'border-primary-dark bg-primary-light text-white'
+												: 'border-typo-light text-typo-dark bg-white'
+										} transition-all duration-300 py-3 px-5 font-semibold text-xs border  mr-2 my-2 rounded-md`}
+										key={variant.node.id}
+										onClick={() =>
+											selectVariant(
+												variant.node.id,
+												variant.node.title,
+												variant.node.image.originalSrc,
+												variant.node.priceV2.amount,
+												variant.node.priceV2.currencyCode
+											)
+										}
+									>
+										{variants.edges.length > 1 && variant.node.title}
+									</div>
+								);
+							})}
+						</div>
+					</section>
+				)}
 
 				{/* QUANTITY */}
 				<p className='uppercase text-xs font-bold mt-4'>quantity</p>

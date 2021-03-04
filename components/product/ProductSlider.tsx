@@ -15,7 +15,6 @@ const ProductSlider: FC<SliderProps> = ({ images }) => {
 		slidesToScroll: 1,
 	};
 
-	console.log(images);
 	return (
 		<div>
 			<Slider {...settings}>

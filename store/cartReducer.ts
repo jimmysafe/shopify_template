@@ -24,10 +24,14 @@ export const cart = createSlice({
 			const existingItem = index !== -1;
 
 			if (existingItem) {
-				state.items[index].quantity += action.payload.quantity;
-				state.items[index].price = state.items[index].price * state.items[index].quantity;
+				const newItem = action.payload;
+				newItem.price = newItem.price * newItem.quantity;
+				state.items[index].quantity += newItem.quantity;
+				state.items[index].price += newItem.price;
 			} else {
-				state.items = [...state.items, action.payload];
+				const newItem = action.payload;
+				newItem.price = newItem.price * newItem.quantity;
+				state.items = [...state.items, newItem];
 			}
 
 			localStorage.setItem('cart', JSON.stringify(state.items));
