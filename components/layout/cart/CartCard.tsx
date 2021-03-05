@@ -1,6 +1,8 @@
 import { FC } from 'react';
 import { useDispatch } from '../../../store';
 import { removeFromCart } from '../../../store/cartReducer';
+import { Currency } from '../../../utils/currency';
+import { Price } from '../../../utils/price';
 
 type CartCardProps = {
 	variantId: string;
@@ -32,7 +34,7 @@ const CartCard: FC<CartCardProps> = ({ variantId, title, quantity, image, curren
 
 			<div className='flex items-end font-semibold text-lg'>
 				<p>
-					{currency} {price}
+					{Currency(currency)} {Price(price)}
 				</p>
 			</div>
 		</div>

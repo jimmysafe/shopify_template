@@ -1,6 +1,8 @@
 import { useRouter } from 'next/dist/client/router';
 import { FC } from 'react';
 import { ProductPriceRange } from '../../graphql/generated';
+import { Currency } from '../../utils/currency';
+import { Price } from '../../utils/price';
 
 type CardProps = {
 	title: string;
@@ -10,6 +12,8 @@ type CardProps = {
 };
 
 const ProductCard: FC<CardProps> = ({ title, handle, price, image }) => {
+	console.log(price.minVariantPrice.amount);
+
 	const router = useRouter();
 	return (
 		<div
@@ -21,7 +25,8 @@ const ProductCard: FC<CardProps> = ({ title, handle, price, image }) => {
 			</div>
 			<p className='text-typo-dark mt-2'>{title}</p>
 			<p className='text-sm font-semibold'>
-				{price.minVariantPrice.currencyCode} {price.minVariantPrice.amount}
+				{Currency(price.minVariantPrice.currencyCode)}
+				{Price(price.minVariantPrice.amount)}
 			</p>
 		</div>
 	);

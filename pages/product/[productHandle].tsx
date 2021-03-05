@@ -6,6 +6,8 @@ import { addToCart as add } from '../../store/cartReducer';
 import { useDispatch } from '../../store';
 import ProductSlider from '../../components/product/ProductSlider';
 import { FiMinus as Minus, FiPlus as Plus } from 'react-icons/fi';
+import { Currency } from '../../utils/currency';
+import { Price } from '../../utils/price';
 
 type ProductPageProps = {
 	handle: string;
@@ -100,8 +102,14 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 				{/* PRICE */}
 				<div className='font-semibold my-2'>
 					<span>{`${
-						selectedVariant ? selectedVariant?.currency : priceRange.minVariantPrice.currencyCode
-					} ${selectedVariant ? selectedVariant?.price : priceRange.minVariantPrice.amount}`}</span>
+						selectedVariant
+							? Currency(selectedVariant.currency)
+							: Currency(priceRange.minVariantPrice.currencyCode)
+					}${
+						selectedVariant
+							? Price(selectedVariant?.price)
+							: Price(priceRange.minVariantPrice.amount)
+					}`}</span>
 				</div>
 
 				{/* VARIANTS */}
