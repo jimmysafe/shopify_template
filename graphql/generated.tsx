@@ -5105,6 +5105,44 @@ export type CheckoutCreateMutation = (
   )> }
 );
 
+export type CustomerCreateMutationVariables = Exact<{
+  input: CustomerCreateInput;
+}>;
+
+
+export type CustomerCreateMutation = (
+  { __typename?: 'Mutation' }
+  & { customerCreate?: Maybe<(
+    { __typename?: 'CustomerCreatePayload' }
+    & { customer?: Maybe<(
+      { __typename?: 'Customer' }
+      & Pick<Customer, 'id'>
+    )>, customerUserErrors: Array<(
+      { __typename?: 'CustomerUserError' }
+      & Pick<CustomerUserError, 'code' | 'field' | 'message'>
+    )> }
+  )> }
+);
+
+export type CustomerLoginMutationVariables = Exact<{
+  input: CustomerAccessTokenCreateInput;
+}>;
+
+
+export type CustomerLoginMutation = (
+  { __typename?: 'Mutation' }
+  & { customerAccessTokenCreate?: Maybe<(
+    { __typename?: 'CustomerAccessTokenCreatePayload' }
+    & { customerAccessToken?: Maybe<(
+      { __typename?: 'CustomerAccessToken' }
+      & Pick<CustomerAccessToken, 'accessToken' | 'expiresAt'>
+    )>, customerUserErrors: Array<(
+      { __typename?: 'CustomerUserError' }
+      & Pick<CustomerUserError, 'code' | 'field' | 'message'>
+    )> }
+  )> }
+);
+
 export type CollectionQueryVariables = Exact<{
   handle: Scalars['String'];
 }>;
@@ -5326,6 +5364,85 @@ export function useCheckoutCreateMutation(baseOptions?: Apollo.MutationHookOptio
 export type CheckoutCreateMutationHookResult = ReturnType<typeof useCheckoutCreateMutation>;
 export type CheckoutCreateMutationResult = Apollo.MutationResult<CheckoutCreateMutation>;
 export type CheckoutCreateMutationOptions = Apollo.BaseMutationOptions<CheckoutCreateMutation, CheckoutCreateMutationVariables>;
+export const CustomerCreateDocument = gql`
+    mutation customerCreate($input: CustomerCreateInput!) {
+  customerCreate(input: $input) {
+    customer {
+      id
+    }
+    customerUserErrors {
+      code
+      field
+      message
+    }
+  }
+}
+    `;
+export type CustomerCreateMutationFn = Apollo.MutationFunction<CustomerCreateMutation, CustomerCreateMutationVariables>;
+
+/**
+ * __useCustomerCreateMutation__
+ *
+ * To run a mutation, you first call `useCustomerCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCustomerCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [customerCreateMutation, { data, loading, error }] = useCustomerCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCustomerCreateMutation(baseOptions?: Apollo.MutationHookOptions<CustomerCreateMutation, CustomerCreateMutationVariables>) {
+        return Apollo.useMutation<CustomerCreateMutation, CustomerCreateMutationVariables>(CustomerCreateDocument, baseOptions);
+      }
+export type CustomerCreateMutationHookResult = ReturnType<typeof useCustomerCreateMutation>;
+export type CustomerCreateMutationResult = Apollo.MutationResult<CustomerCreateMutation>;
+export type CustomerCreateMutationOptions = Apollo.BaseMutationOptions<CustomerCreateMutation, CustomerCreateMutationVariables>;
+export const CustomerLoginDocument = gql`
+    mutation customerLogin($input: CustomerAccessTokenCreateInput!) {
+  customerAccessTokenCreate(input: $input) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    customerUserErrors {
+      code
+      field
+      message
+    }
+  }
+}
+    `;
+export type CustomerLoginMutationFn = Apollo.MutationFunction<CustomerLoginMutation, CustomerLoginMutationVariables>;
+
+/**
+ * __useCustomerLoginMutation__
+ *
+ * To run a mutation, you first call `useCustomerLoginMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCustomerLoginMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [customerLoginMutation, { data, loading, error }] = useCustomerLoginMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCustomerLoginMutation(baseOptions?: Apollo.MutationHookOptions<CustomerLoginMutation, CustomerLoginMutationVariables>) {
+        return Apollo.useMutation<CustomerLoginMutation, CustomerLoginMutationVariables>(CustomerLoginDocument, baseOptions);
+      }
+export type CustomerLoginMutationHookResult = ReturnType<typeof useCustomerLoginMutation>;
+export type CustomerLoginMutationResult = Apollo.MutationResult<CustomerLoginMutation>;
+export type CustomerLoginMutationOptions = Apollo.BaseMutationOptions<CustomerLoginMutation, CustomerLoginMutationVariables>;
 export const CollectionDocument = gql`
     query collection($handle: String!) {
   collectionByHandle(handle: $handle) {

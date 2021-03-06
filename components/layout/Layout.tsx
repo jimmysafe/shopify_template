@@ -9,11 +9,11 @@ const Layout: FC = ({ children }) => {
 	// const menu = useSelector((state) => state.menu);
 
 	return (
-		<main>
+		<main className='min-h-screen w-full flex flex-col'>
 			<Menu />
 			<Cart />
 			<Header />
-			<div className='container mx-auto'>{children}</div>
+			<div className='container mx-auto flex-1 flex flex-col '>{children}</div>
 		</main>
 	);
 };
