@@ -5086,6 +5086,63 @@ export enum WeightUnit {
   Ounces = 'OUNCES'
 }
 
+export type CollectionQueryVariables = Exact<{
+  handle: Scalars['String'];
+}>;
+
+
+export type CollectionQuery = (
+  { __typename?: 'QueryRoot' }
+  & { collectionByHandle?: Maybe<(
+    { __typename?: 'Collection' }
+    & { products: (
+      { __typename?: 'ProductConnection' }
+      & { edges: Array<(
+        { __typename?: 'ProductEdge' }
+        & { node: (
+          { __typename?: 'Product' }
+          & Pick<Product, 'id' | 'title' | 'handle'>
+          & { priceRange: (
+            { __typename?: 'ProductPriceRange' }
+            & { maxVariantPrice: (
+              { __typename?: 'MoneyV2' }
+              & Pick<MoneyV2, 'amount' | 'currencyCode'>
+            ), minVariantPrice: (
+              { __typename?: 'MoneyV2' }
+              & Pick<MoneyV2, 'amount' | 'currencyCode'>
+            ) }
+          ), images: (
+            { __typename?: 'ImageConnection' }
+            & { edges: Array<(
+              { __typename?: 'ImageEdge' }
+              & { node: (
+                { __typename?: 'Image' }
+                & Pick<Image, 'originalSrc' | 'altText'>
+              ) }
+            )> }
+          ), variants: (
+            { __typename?: 'ProductVariantConnection' }
+            & { edges: Array<(
+              { __typename?: 'ProductVariantEdge' }
+              & { node: (
+                { __typename?: 'ProductVariant' }
+                & Pick<ProductVariant, 'id' | 'title'>
+                & { priceV2: (
+                  { __typename?: 'MoneyV2' }
+                  & Pick<MoneyV2, 'amount' | 'currencyCode'>
+                ), image?: Maybe<(
+                  { __typename?: 'Image' }
+                  & Pick<Image, 'originalSrc'>
+                )> }
+              ) }
+            )> }
+          ) }
+        ) }
+      )> }
+    ) }
+  )> }
+);
+
 export type ProductByHandleQueryVariables = Exact<{
   handle: Scalars['String'];
 }>;
@@ -5210,6 +5267,80 @@ export type ProductsByTypeQuery = (
 );
 
 
+export const CollectionDocument = gql`
+    query collection($handle: String!) {
+  collectionByHandle(handle: $handle) {
+    products(first: 250) {
+      edges {
+        node {
+          id
+          title
+          handle
+          priceRange {
+            maxVariantPrice {
+              amount
+              currencyCode
+            }
+            minVariantPrice {
+              amount
+              currencyCode
+            }
+          }
+          images(first: 10) {
+            edges {
+              node {
+                originalSrc
+                altText
+              }
+            }
+          }
+          variants(first: 10) {
+            edges {
+              node {
+                id
+                title
+                priceV2 {
+                  amount
+                  currencyCode
+                }
+                image {
+                  originalSrc
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCollectionQuery__
+ *
+ * To run a query within a React component, call `useCollectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionQuery({
+ *   variables: {
+ *      handle: // value for 'handle'
+ *   },
+ * });
+ */
+export function useCollectionQuery(baseOptions: Apollo.QueryHookOptions<CollectionQuery, CollectionQueryVariables>) {
+        return Apollo.useQuery<CollectionQuery, CollectionQueryVariables>(CollectionDocument, baseOptions);
+      }
+export function useCollectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionQuery, CollectionQueryVariables>) {
+          return Apollo.useLazyQuery<CollectionQuery, CollectionQueryVariables>(CollectionDocument, baseOptions);
+        }
+export type CollectionQueryHookResult = ReturnType<typeof useCollectionQuery>;
+export type CollectionLazyQueryHookResult = ReturnType<typeof useCollectionLazyQuery>;
+export type CollectionQueryResult = Apollo.QueryResult<CollectionQuery, CollectionQueryVariables>;
 export const ProductByHandleDocument = gql`
     query productByHandle($handle: String!) {
   productByHandle(handle: $handle) {

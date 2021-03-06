@@ -4,7 +4,7 @@ import { ProductPriceRange } from '../../graphql/generated';
 import { Currency } from '../../utils/currency';
 import { Price } from '../../utils/price';
 
-type CardProps = {
+export type CardProps = {
 	title: string;
 	handle: string;
 	price: ProductPriceRange;
@@ -12,8 +12,6 @@ type CardProps = {
 };
 
 const ProductCard: FC<CardProps> = ({ title, handle, price, image }) => {
-	console.log(price.minVariantPrice.amount);
-
 	const router = useRouter();
 	return (
 		<div

@@ -1,22 +1,21 @@
 import { FC } from 'react';
-import { ProductsByTypeQuery } from '../../graphql/generated';
 import ProductCard from './ProductCard';
+import type { CardProps } from './ProductCard';
 
 type ListProps = {
-	productsData: ProductsByTypeQuery;
+	productsData: CardProps[];
 };
 
 const ProductList: FC<ListProps> = ({ productsData }) => {
-	const products = productsData.products.edges;
 	return (
 		<div className='flex flex-wrap'>
-			{products.map((product) => (
+			{productsData.map((product) => (
 				<ProductCard
-					key={product.node.id}
-					title={product.node.title}
-					price={product.node.priceRange}
-					handle={product.node.handle}
-					image={product.node.images.edges[0].node.originalSrc}
+					key={product.handle}
+					title={product.title}
+					price={product.price}
+					handle={product.handle}
+					image={product.image}
 				/>
 			))}
 		</div>
