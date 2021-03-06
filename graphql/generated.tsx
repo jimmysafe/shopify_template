@@ -5086,6 +5086,25 @@ export enum WeightUnit {
   Ounces = 'OUNCES'
 }
 
+export type CheckoutCreateMutationVariables = Exact<{
+  input: CheckoutCreateInput;
+}>;
+
+
+export type CheckoutCreateMutation = (
+  { __typename?: 'Mutation' }
+  & { checkoutCreate?: Maybe<(
+    { __typename?: 'CheckoutCreatePayload' }
+    & { checkout?: Maybe<(
+      { __typename?: 'Checkout' }
+      & Pick<Checkout, 'id' | 'webUrl'>
+    )>, checkoutUserErrors: Array<(
+      { __typename?: 'CheckoutUserError' }
+      & Pick<CheckoutUserError, 'code' | 'field' | 'message'>
+    )> }
+  )> }
+);
+
 export type CollectionQueryVariables = Exact<{
   handle: Scalars['String'];
 }>;
@@ -5267,6 +5286,46 @@ export type ProductsByTypeQuery = (
 );
 
 
+export const CheckoutCreateDocument = gql`
+    mutation checkoutCreate($input: CheckoutCreateInput!) {
+  checkoutCreate(input: $input) {
+    checkout {
+      id
+      webUrl
+    }
+    checkoutUserErrors {
+      code
+      field
+      message
+    }
+  }
+}
+    `;
+export type CheckoutCreateMutationFn = Apollo.MutationFunction<CheckoutCreateMutation, CheckoutCreateMutationVariables>;
+
+/**
+ * __useCheckoutCreateMutation__
+ *
+ * To run a mutation, you first call `useCheckoutCreateMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCheckoutCreateMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [checkoutCreateMutation, { data, loading, error }] = useCheckoutCreateMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCheckoutCreateMutation(baseOptions?: Apollo.MutationHookOptions<CheckoutCreateMutation, CheckoutCreateMutationVariables>) {
+        return Apollo.useMutation<CheckoutCreateMutation, CheckoutCreateMutationVariables>(CheckoutCreateDocument, baseOptions);
+      }
+export type CheckoutCreateMutationHookResult = ReturnType<typeof useCheckoutCreateMutation>;
+export type CheckoutCreateMutationResult = Apollo.MutationResult<CheckoutCreateMutation>;
+export type CheckoutCreateMutationOptions = Apollo.BaseMutationOptions<CheckoutCreateMutation, CheckoutCreateMutationVariables>;
 export const CollectionDocument = gql`
     query collection($handle: String!) {
   collectionByHandle(handle: $handle) {

@@ -4,6 +4,7 @@ import { closeCart, initCart, removeFromCart } from '../../../store/cartReducer'
 import { FiX as X } from 'react-icons/fi';
 import { Transition } from 'react-transition-group';
 import CartCard from './CartCard';
+import CheckoutButton from './CheckoutButton';
 
 const Cart: FC = () => {
 	const dispatch = useDispatch();
@@ -36,7 +37,7 @@ const Cart: FC = () => {
 							...defaultStyle,
 							...transitionStyles[state],
 						}}
-						className='fixed top-0 right-0 h-screen w-screen bg-white z-10'
+						className='fixed top-0 right-0 h-screen w-screen bg-white z-10 mb-10'
 					>
 						<div
 							className='fixed top-4 right-3 flex justify-center items-center z-10'
@@ -62,6 +63,7 @@ const Cart: FC = () => {
 									/>
 								))}
 						</section>
+						<CheckoutButton />
 					</div>
 				)}
 			</Transition>
