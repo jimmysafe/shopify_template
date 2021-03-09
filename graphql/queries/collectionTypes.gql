@@ -1,0 +1,11 @@
+query collectionTypes($handle: String!) {
+	collectionByHandle(handle: $handle) {
+		products(first: 250) {
+			edges {
+				node {
+					productType
+				}
+			}
+		}
+	}
+}

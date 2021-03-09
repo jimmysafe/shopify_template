@@ -1,13 +1,13 @@
-import { GetServerSideProps, NextPage } from 'next';
+import { FC } from 'react';
 import type { CardProps } from '../../components/product/ProductCard';
 import ProductList from '../../components/product/ProductList';
 import { useProductsByTypeQuery } from '../../graphql/generated';
 
 type Props = {
-	productType: string;
+	productType: string | string[];
 };
 
-const ProductsByTypePage: NextPage<Props> = ({ productType }) => {
+const FilteredList: FC<Props> = ({ productType }) => {
 	const { loading, error, data } = useProductsByTypeQuery({
 		variables: { query: `product_type:${productType}` },
 	});
@@ -24,20 +24,7 @@ const ProductsByTypePage: NextPage<Props> = ({ productType }) => {
 		};
 	});
 
-	return (
-		<div>
-			<h1 className='font-primary font-semibold text-2xl text-center my-4'>{productType}</h1>
-			<ProductList productsData={productsData} />
-		</div>
-	);
+	return <ProductList productsData={productsData} />;
 };
 
-export default ProductsByTypePage;
-
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-	return {
-		props: {
-			productType: params.productType,
-		},
-	};
-};
+export default FilteredList;

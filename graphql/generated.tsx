@@ -5177,27 +5177,54 @@ export type CollectionQuery = (
                 & Pick<Image, 'originalSrc' | 'altText'>
               ) }
             )> }
-          ), variants: (
-            { __typename?: 'ProductVariantConnection' }
-            & { edges: Array<(
-              { __typename?: 'ProductVariantEdge' }
-              & { node: (
-                { __typename?: 'ProductVariant' }
-                & Pick<ProductVariant, 'id' | 'title'>
-                & { priceV2: (
-                  { __typename?: 'MoneyV2' }
-                  & Pick<MoneyV2, 'amount' | 'currencyCode'>
-                ), image?: Maybe<(
-                  { __typename?: 'Image' }
-                  & Pick<Image, 'originalSrc'>
-                )> }
-              ) }
-            )> }
           ) }
         ) }
       )> }
     ) }
   )> }
+);
+
+export type CollectionTypesQueryVariables = Exact<{
+  handle: Scalars['String'];
+}>;
+
+
+export type CollectionTypesQuery = (
+  { __typename?: 'QueryRoot' }
+  & { collectionByHandle?: Maybe<(
+    { __typename?: 'Collection' }
+    & { products: (
+      { __typename?: 'ProductConnection' }
+      & { edges: Array<(
+        { __typename?: 'ProductEdge' }
+        & { node: (
+          { __typename?: 'Product' }
+          & Pick<Product, 'productType'>
+        ) }
+      )> }
+    ) }
+  )> }
+);
+
+export type MenuQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MenuQuery = (
+  { __typename?: 'QueryRoot' }
+  & { collections: (
+    { __typename?: 'CollectionConnection' }
+    & { edges: Array<(
+      { __typename?: 'CollectionEdge' }
+      & { node: (
+        { __typename?: 'Collection' }
+        & Pick<Collection, 'title' | 'handle'>
+        & { image?: Maybe<(
+          { __typename?: 'Image' }
+          & Pick<Image, 'transformedSrc'>
+        )> }
+      ) }
+    )> }
+  ) }
 );
 
 export type ProductByHandleQueryVariables = Exact<{
@@ -5252,23 +5279,6 @@ export type ProductByHandleQuery = (
   )> }
 );
 
-export type ProductsQueryVariables = Exact<{ [key: string]: never; }>;
-
-
-export type ProductsQuery = (
-  { __typename?: 'QueryRoot' }
-  & { products: (
-    { __typename?: 'ProductConnection' }
-    & { edges: Array<(
-      { __typename?: 'ProductEdge' }
-      & { node: (
-        { __typename?: 'Product' }
-        & Pick<Product, 'title'>
-      ) }
-    )> }
-  ) }
-);
-
 export type ProductsByTypeQueryVariables = Exact<{
   query: Scalars['String'];
 }>;
@@ -5282,7 +5292,7 @@ export type ProductsByTypeQuery = (
       { __typename?: 'ProductEdge' }
       & { node: (
         { __typename?: 'Product' }
-        & Pick<Product, 'id' | 'title' | 'handle'>
+        & Pick<Product, 'title' | 'handle'>
         & { priceRange: (
           { __typename?: 'ProductPriceRange' }
           & { maxVariantPrice: (
@@ -5299,22 +5309,6 @@ export type ProductsByTypeQuery = (
             & { node: (
               { __typename?: 'Image' }
               & Pick<Image, 'originalSrc' | 'altText'>
-            ) }
-          )> }
-        ), variants: (
-          { __typename?: 'ProductVariantConnection' }
-          & { edges: Array<(
-            { __typename?: 'ProductVariantEdge' }
-            & { node: (
-              { __typename?: 'ProductVariant' }
-              & Pick<ProductVariant, 'id' | 'title'>
-              & { priceV2: (
-                { __typename?: 'MoneyV2' }
-                & Pick<MoneyV2, 'amount' | 'currencyCode'>
-              ), image?: Maybe<(
-                { __typename?: 'Image' }
-                & Pick<Image, 'originalSrc'>
-              )> }
             ) }
           )> }
         ) }
@@ -5462,26 +5456,11 @@ export const CollectionDocument = gql`
               currencyCode
             }
           }
-          images(first: 10) {
+          images(first: 1) {
             edges {
               node {
                 originalSrc
                 altText
-              }
-            }
-          }
-          variants(first: 10) {
-            edges {
-              node {
-                id
-                title
-                priceV2 {
-                  amount
-                  currencyCode
-                }
-                image {
-                  originalSrc
-                }
               }
             }
           }
@@ -5517,6 +5496,85 @@ export function useCollectionLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions
 export type CollectionQueryHookResult = ReturnType<typeof useCollectionQuery>;
 export type CollectionLazyQueryHookResult = ReturnType<typeof useCollectionLazyQuery>;
 export type CollectionQueryResult = Apollo.QueryResult<CollectionQuery, CollectionQueryVariables>;
+export const CollectionTypesDocument = gql`
+    query collectionTypes($handle: String!) {
+  collectionByHandle(handle: $handle) {
+    products(first: 250) {
+      edges {
+        node {
+          productType
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useCollectionTypesQuery__
+ *
+ * To run a query within a React component, call `useCollectionTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCollectionTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCollectionTypesQuery({
+ *   variables: {
+ *      handle: // value for 'handle'
+ *   },
+ * });
+ */
+export function useCollectionTypesQuery(baseOptions: Apollo.QueryHookOptions<CollectionTypesQuery, CollectionTypesQueryVariables>) {
+        return Apollo.useQuery<CollectionTypesQuery, CollectionTypesQueryVariables>(CollectionTypesDocument, baseOptions);
+      }
+export function useCollectionTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CollectionTypesQuery, CollectionTypesQueryVariables>) {
+          return Apollo.useLazyQuery<CollectionTypesQuery, CollectionTypesQueryVariables>(CollectionTypesDocument, baseOptions);
+        }
+export type CollectionTypesQueryHookResult = ReturnType<typeof useCollectionTypesQuery>;
+export type CollectionTypesLazyQueryHookResult = ReturnType<typeof useCollectionTypesLazyQuery>;
+export type CollectionTypesQueryResult = Apollo.QueryResult<CollectionTypesQuery, CollectionTypesQueryVariables>;
+export const MenuDocument = gql`
+    query menu {
+  collections(first: 250) {
+    edges {
+      node {
+        title
+        handle
+        image {
+          transformedSrc(maxWidth: 100, maxHeight: 100)
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useMenuQuery__
+ *
+ * To run a query within a React component, call `useMenuQuery` and pass it any options that fit your needs.
+ * When your component renders, `useMenuQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useMenuQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useMenuQuery(baseOptions?: Apollo.QueryHookOptions<MenuQuery, MenuQueryVariables>) {
+        return Apollo.useQuery<MenuQuery, MenuQueryVariables>(MenuDocument, baseOptions);
+      }
+export function useMenuLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<MenuQuery, MenuQueryVariables>) {
+          return Apollo.useLazyQuery<MenuQuery, MenuQueryVariables>(MenuDocument, baseOptions);
+        }
+export type MenuQueryHookResult = ReturnType<typeof useMenuQuery>;
+export type MenuLazyQueryHookResult = ReturnType<typeof useMenuLazyQuery>;
+export type MenuQueryResult = Apollo.QueryResult<MenuQuery, MenuQueryVariables>;
 export const ProductByHandleDocument = gql`
     query productByHandle($handle: String!) {
   productByHandle(handle: $handle) {
@@ -5590,48 +5648,11 @@ export function useProductByHandleLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type ProductByHandleQueryHookResult = ReturnType<typeof useProductByHandleQuery>;
 export type ProductByHandleLazyQueryHookResult = ReturnType<typeof useProductByHandleLazyQuery>;
 export type ProductByHandleQueryResult = Apollo.QueryResult<ProductByHandleQuery, ProductByHandleQueryVariables>;
-export const ProductsDocument = gql`
-    query products {
-  products(first: 1) {
-    edges {
-      node {
-        title
-      }
-    }
-  }
-}
-    `;
-
-/**
- * __useProductsQuery__
- *
- * To run a query within a React component, call `useProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useProductsQuery({
- *   variables: {
- *   },
- * });
- */
-export function useProductsQuery(baseOptions?: Apollo.QueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
-        return Apollo.useQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, baseOptions);
-      }
-export function useProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ProductsQuery, ProductsQueryVariables>) {
-          return Apollo.useLazyQuery<ProductsQuery, ProductsQueryVariables>(ProductsDocument, baseOptions);
-        }
-export type ProductsQueryHookResult = ReturnType<typeof useProductsQuery>;
-export type ProductsLazyQueryHookResult = ReturnType<typeof useProductsLazyQuery>;
-export type ProductsQueryResult = Apollo.QueryResult<ProductsQuery, ProductsQueryVariables>;
 export const ProductsByTypeDocument = gql`
     query productsByType($query: String!) {
   products(query: $query, first: 250) {
     edges {
       node {
-        id
         title
         handle
         priceRange {
@@ -5644,26 +5665,11 @@ export const ProductsByTypeDocument = gql`
             currencyCode
           }
         }
-        images(first: 10) {
+        images(first: 1) {
           edges {
             node {
               originalSrc
               altText
-            }
-          }
-        }
-        variants(first: 10) {
-          edges {
-            node {
-              id
-              title
-              priceV2 {
-                amount
-                currencyCode
-              }
-              image {
-                originalSrc
-              }
             }
           }
         }

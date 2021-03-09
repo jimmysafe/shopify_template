@@ -8,8 +8,7 @@
 		"start": "next start",
 		"build:css": "tailwind build styles/main.css -o styles/compiled.css",
 		"generate": "graphql-codegen --config codegen.js",
-		"generate:watch": "npm run generate -- --watch",
-		"generate:menu": "node menu/generate.js"
+		"generate:watch": "npm run generate -- --watch"
 	},
 	"dependencies": {
 		"@apollo/client": "^3.3.11",

@@ -1,47 +1,38 @@
+import { useRouter } from 'next/router';
 import { FC } from 'react';
-import { useSelector } from '../../../store';
-import { Transition } from 'react-transition-group';
-import Collections from './Collections';
-import Categories from './Categories';
-import BackButton from './BackButton';
-
-const duration = 300;
-
-const defaultStyle = {
-	transition: `all ${duration}ms ease-in-out`,
-	transform: 'translateX(0px)',
-};
-
-const transitionStyles = {
-	entering: { transform: 'translateX(0px)' },
-	entered: { transform: 'translateX(0px)' },
-	exiting: { transform: 'translateX(-100vw)' },
-	exited: { transform: 'translateX(-100vw)' },
-};
+import { useMenuQuery } from '../../../graphql/generated';
+import { useDispatch } from '../../../store';
+import { closeMenu } from '../../../store/menuReducer';
 
 const MenuItems: FC = () => {
-	const submenu = useSelector((state) => state.menu.subMenu);
+	const dispatch = useDispatch();
+	const router = useRouter();
 
-	const isSubmenu = submenu.length > 0;
+	const { loading, error, data } = useMenuQuery();
+
+	if (loading) return <p>Loading...</p>;
+	if (error) return <p>Error..</p>;
+
+	const navigateToCollection = (collectionHandle: string) => {
+		dispatch(closeMenu());
+		router.push(`/collections/${collectionHandle}`);
+	};
 
 	return (
 		<div className='menu-items mt-10 relative'>
-			{isSubmenu && <BackButton />}
-			<Transition in={!isSubmenu} timeout={duration}>
-				{(state) => (
-					<div
-						className='flex justify-center items-start'
-						style={{
-							width: '200vw',
-							...defaultStyle,
-							...transitionStyles[state],
-						}}
-					>
-						<Collections />
-						<Categories />
-					</div>
-				)}
-			</Transition>
+			<div className='flex justify-center items-start'>
+				<div className='flex flex-col items-center justify-center flex-1'>
+					{data.collections.edges.map((item) => (
+						<div
+							key={item.node.handle}
+							className='my-4 text-black font-semibold text-lg flex items-center'
+							onClick={() => navigateToCollection(item.node.handle)}
+						>
+							<span>{item.node.title}</span>
+						</div>
+					))}
+				</div>
+			</div>
 		</div>
 	);
 };

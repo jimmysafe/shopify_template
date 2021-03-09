@@ -15,7 +15,7 @@ const ProductCard: FC<CardProps> = ({ title, handle, price, image }) => {
 	const router = useRouter();
 	return (
 		<div
-			className='flex-1 m-4 text-center font-primary'
+			className='p-4 text-center font-primary w-1/2'
 			onClick={() => router.push(`/product/${handle}`)}
 		>
 			<div className='w-full border border-primary-light shadow-md'>

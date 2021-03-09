@@ -1,0 +1,13 @@
+query menu {
+	collections(first: 250) {
+		edges {
+			node {
+				title
+				handle
+				image {
+					transformedSrc(maxWidth: 100, maxHeight: 100)
+				}
+			}
+		}
+	}
+}

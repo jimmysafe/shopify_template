@@ -4,7 +4,6 @@ export const menu = createSlice({
 	name: 'menu',
 	initialState: {
 		open: false,
-		subMenu: [],
 	},
 	reducers: {
 		openMenu: (state) => {
@@ -13,16 +12,9 @@ export const menu = createSlice({
 		closeMenu: (state) => {
 			state.open = false;
 		},
-		showSubMenu: (state, action) => {
-			const items = action.payload;
-			state.subMenu = items;
-		},
-		hideSubMenu: (state) => {
-			state.subMenu = [];
-		},
 	},
 });
 
-export const { openMenu, closeMenu, showSubMenu, hideSubMenu } = menu.actions;
+export const { openMenu, closeMenu } = menu.actions;
 
 export default menu.reducer;
