@@ -8,6 +8,7 @@ import ProductSlider from '../../components/product/ProductSlider';
 import { FiMinus as Minus, FiPlus as Plus } from 'react-icons/fi';
 import { Currency } from '../../utils/currency';
 import { Price } from '../../utils/price';
+import Loading from '../../components/layout/Loading';
 
 type ProductPageProps = {
 	handle: string;
@@ -38,7 +39,7 @@ const ProductPage: NextPage<ProductPageProps> = ({ handle }) => {
 		first_variant?.click();
 	}, [productData]);
 
-	if (productLoading) return <p>Loading...</p>;
+	if (productLoading) return <Loading />;
 	if (productError) return <p>Error..</p>;
 
 	const { variants, images, priceRange, title } = productData.productByHandle;

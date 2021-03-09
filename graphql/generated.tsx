@@ -5543,7 +5543,7 @@ export const MenuDocument = gql`
         title
         handle
         image {
-          transformedSrc(maxWidth: 100, maxHeight: 100)
+          transformedSrc(maxWidth: 375, maxHeight: 375)
         }
       }
     }

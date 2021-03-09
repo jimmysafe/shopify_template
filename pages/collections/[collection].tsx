@@ -1,6 +1,8 @@
 import { GetServerSideProps, NextPage } from 'next';
 import { useRouter } from 'next/router';
+import Loading from '../../components/layout/Loading';
 import CollectionList from '../../components/list/CollectionList';
+import Filter from '../../components/list/Filter';
 import FilteredList from '../../components/list/FilteredList';
 import { useCollectionTypesQuery } from '../../graphql/generated';
 
@@ -14,10 +16,10 @@ const CollectionPage: NextPage<CollectionPageProps> = ({ collection }) => {
 		variables: { handle: collection },
 	});
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <Loading />;
 	if (error) return <p>Error...</p>;
 
-	const types = productTypes.collectionByHandle.products.edges
+	const types = productTypes?.collectionByHandle.products.edges
 		.map((product) => {
 			return product.node.productType;
 		})
@@ -25,27 +27,10 @@ const CollectionPage: NextPage<CollectionPageProps> = ({ collection }) => {
 
 	return (
 		<div>
-			<div>
-				{types.map((type) => (
-					<span
-						key={type}
-						onClick={() => {
-							router.push({
-								pathname: '/collections/[collection]',
-								query: {
-									collection,
-									filter: type,
-								},
-							});
-						}}
-					>
-						{type}
-					</span>
-				))}
-			</div>
 			<h1 className='font-primary font-semibold text-2xl text-center my-4'>
 				{collection.charAt(0).toUpperCase() + collection.slice(1)}
 			</h1>
+			<Filter types={types ? types : []} collection={collection} />
 			{router.query.filter ? (
 				<FilteredList productType={router.query.filter} />
 			) : (

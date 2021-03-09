@@ -2,6 +2,7 @@ import { FC } from 'react';
 import type { CardProps } from '../../components/product/ProductCard';
 import ProductList from '../../components/product/ProductList';
 import { useProductsByTypeQuery } from '../../graphql/generated';
+import Loading from '../layout/Loading';
 
 type Props = {
 	productType: string | string[];
@@ -12,7 +13,7 @@ const FilteredList: FC<Props> = ({ productType }) => {
 		variables: { query: `product_type:${productType}` },
 	});
 
-	if (loading) return <p>Loading...</p>;
+	if (loading) return <Loading />;
 	if (error) return <p>Error..</p>;
 
 	const productsData: CardProps[] = data.products.edges.map((product) => {
